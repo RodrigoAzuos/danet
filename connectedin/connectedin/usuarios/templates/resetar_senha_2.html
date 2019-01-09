@@ -1,0 +1,23 @@
+{%extends "base_usuario.html"%}
+{% load staticfiles %}
+{% block content%}
+<div class="row">
+    <div class="col-12 col-md-4 col-xl-4">
+    <div class="form-signin-heading">
+        Esqueceu a senha? Forneça o seu endereço de email abaixo e te enviaremos instruções para definir uma nova.
+    </div>
+
+        <form method="post"><input type='hidden' class="form-group"/>
+        {% csrf_token %}
+            <input  type="email" name="email" maxlength="254" class="form-control"  placeholder="Digite seu e-mail *" required id="id_email" />
+            <!--<input 	name="email" id = "id_email" class = "form-control" placeholder="E-mail *" required>-->
+            <hr/>
+            <input type="submit" value="Reinicializar minha senha" class="btn btn-primary"/>
+        </form>
+
+    </div>
+    <div class="col-12 col-md-8 col-xl-8">
+
+    </div>
+</div>
+{% endblock %}

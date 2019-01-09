@@ -1,0 +1,122 @@
+{%extends "base_time_line.html" %}
+{% block header%}
+
+    <div class="row">
+        <div class="col-12 col-md-3 col-xl-3" >
+        </div>
+        <div class="col-12 col-md-6 col-xl-6">
+            <br/>
+        <form method="post" class="form-group" action="{% url 'time_line' %}">
+            {% csrf_token %}
+            <textarea name="resumo"  rows="3" class="form-control"
+                      maxlength="10000" required id="id_resumo" placeholder="Conte-nos algo!"></textarea>
+            <button type="submit" value="postar" class="btn-primary justify-content-end ">Postar</button>
+
+            {% if form.errors %}
+                <div class="alert alert-danger">
+                    <button type="button" class="close" data-dismiss="alert"
+                    aria-hidden="true">
+                    </button>
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+        </form>
+        </div>
+        <div class="col-12 col-md-3 col-xl-3">
+
+        </div>
+    </div>
+{% endblock%}
+
+{%block content%}
+
+{% if resultados %}
+        <div class="card-body">
+        <h5 class="card-title">Resultado da busca</h5>
+        </div>
+        {% for resultado in resultados%}
+        <div class="text-left">
+            <div class="card">
+                <div class="card-body">
+                    <a href = "{% url 'exibir' resultado.id %}" class="card-link">
+                        {{resultado.nome}}
+                    </a>
+                    <p class="card-text">{{resultado.usuario.email}}</p>
+              </div>
+            </div>
+        </div>
+        {% endfor %}
+    {%endif%}
+
+    {%for post in posts%}
+        <div class="card text-center">
+            <div class="card-header">
+                {{post.autor}}
+            </div>
+            <div class="card-body">
+                <p class="card-text">{{post.resumo}}</p>
+                {% if post.autor == logado or logado.usuario.is_superuser%}
+                <div class="text-right">
+                    <a href="{% url 'deletar_post' post.id %}" class="btn btn-danger" onclick="return confirm('Deletar post?')">Deletar</a>
+                </div>
+                {%endif%}
+            </div>
+            <div class="card-footer text-muted">
+                {{post.criado_em}}
+            </div>
+        </div>
+    {%endfor%}
+{% endblock%}
+
+{%block rename%}
+
+{%if logado.convites_recebidos.all %}
+    <div class="card-body">
+        <h5 class="card-title">Convites recebidos</h5>
+    </div>
+    {%for convite in logado.convites_recebidos.all%}
+        <div class="card" style="width: 18rem;">
+          <div class="card-body">
+            <h5 class="card-title">Convite recebido</h5>
+            <p class="card-text">{{convite}}</p>
+            <a href="{% url 'aceitar' convite.id %}" class="card-link">Aceitar</a>
+            <a href="{% url 'recusar' convite.id %}" class="card-link">Recusar</a>
+          </div>
+        </div>
+    {% endfor %}
+{%endif%}
+
+{%if logado.convites_enviados.all %}
+    <div class="card-body">
+        <h5 class="card-title">Convites enviados</h5>
+    </div>
+    {%for convite in logado.convites_enviados.all%}
+        <div class="card" style="width: 18rem;">
+          <div class="card-body">
+            <h5 class="card-title">Convite enviado</h5>
+            <p class="card-text">{{convite}}</p>
+            <a href="{% url 'apagar_solicitacao' convite.id%}" class="card-link"
+               onclick="return confirm('Apagar solicitação?')">Apagar</a>
+          </div>
+        </div>
+    {% endfor %}
+{%endif%}
+{%endblock%}
+
+{%block aside%}
+{%if logado.contatos.all %}
+    <div class="card-body">
+        <h5 class="card-title">Amigos</h5>
+    </div>
+    {%for contato in logado.contatos.all%}
+        <div class="card" style="width: 18rem;">
+          <div class="card-body">
+            <a href = "{% url 'exibir' contato.id %}" class="card-link">
+			    {{contato.nome}}
+            </a>
+            <p class="card-text">{{contato.usuario.email}}</p>
+          </div>
+        </div>
+    {% endfor %}
+{%endif%}
+{%endblock%}

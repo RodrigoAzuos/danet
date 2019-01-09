@@ -1,0 +1,19 @@
+{% extends "base_minha_pagina.html" %}
+
+{%block content%}
+<div class="card">
+  		<h5 class="card-header">Detalhes do Perfil</h5>
+
+			<div class="card-body">
+    	<h5 class="card-title">{{logado.nome}}</h5>
+    	<div class="card-text">
+			<ul>
+				<li><em>e-mail: {{logado.usuario.email}}</em></li>
+				<li>Empresa: {{logado.nome_empresa}}</li>
+				<li>Fone: {{logado.telefone}}</li>
+				<li>Data de nascimento: {{logado.data_nascimento}}</li>
+			</ul>
+		</div>
+  </div>
+</div>
+{%endblock%}

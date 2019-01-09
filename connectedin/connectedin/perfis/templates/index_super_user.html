@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<h1>Bem vindo {{logado.nome}} ! </h1>
+
+	<form action="." method="get">
+		<input id="search_box" name="search_box" type="text" placeholder="Search...">
+        <button type="submit" value="Buscar">Buscar</button>
+	</form>
+    <a href="{% url 'registrar_super_user' %}">Registrar super usuário</a>
+	{% if perfis %}
+		<h2>Perfis cadastrados</h2>
+		<ul>
+			{% for perfil in perfis %}
+				<li>
+					<a href = "{% url 'exibir' perfil.id %}">
+						{{perfil.nome}}
+					</a>
+					- {{perfil.usuario.email}}
+                    <a href="#"> Tornar super usuário </a>
+				</li>
+			{% endfor %}
+		</ul>
+
+		{%if logado.convites_recebidos.all %}
+			<h2>Convites recebidos</h2>
+			{%for convite in logado.convites_recebidos.all%}
+				<ul>
+					<li>
+						<h4>{{convite}}</h4>
+						<a href="{% url 'aceitar' convite.id %}">Aceitar</a>
+						<a href="{% url 'recusar' convite.id %}">Recusar</a>
+					</li>
+				</ul>
+			{% endfor %}
+		{% endif %}
+
+		{%if logado.convites_enviados.all %}
+			<h2>Convites enviados</h2>
+			{%for convite in logado.convites_enviados.all%}
+				<ul>
+					<li>
+						<h4>{{convite}}</h4>
+						<a href="{% url 'apagar_solicitacao' convite.id%}">Apagar</a>
+					</li>
+				</ul>
+			{% endfor %}
+		{% endif %}
+
+		{%if logado.contatos.all %}
+			<h2>Amigos</h2>
+
+				<ul>
+					{%for contato in logado.contatos.all%}
+						<li>
+							<a href = "{% url 'exibir' contato.id %}">
+								{{contato.nome}}
+							</a>
+							- {{contato.usuario.email}}
+						</li>
+					{% endfor %}
+				</ul>
+		{% endif %}
+
+	{% else %}
+		<h2>Nenhum perfil cadastrado</h2>
+	{% endif%}
+
+
+</body>
+</html>

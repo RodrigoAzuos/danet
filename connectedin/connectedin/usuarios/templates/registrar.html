@@ -1,0 +1,60 @@
+{% extends "base_usuario.html"%}
+{% block content %}
+<div class="row">
+	<div class=" col-12 col-md-3 col-xl-3" >
+	</div>
+	<div class="col-12 col-md-6 col-xl-6">
+		<form class = "form-signin"  method="post">
+			{% csrf_token %}
+
+			<h2 class="form-signin-heading">Crie seu usuário</h2>
+
+			<input 	name="first_name" id = "id_first_name" class = "form-control"
+					placeholder="Primeiro nome" required autofocus>
+
+			<input 	name="last_name" id = "id_last_name" class = "form-control"
+					placeholder="Ultimo nome" required>
+
+			<select name="sexo" id="id_sexo" class="form-control">
+				<option value="M">Masculino</option>
+				<option value="F">Feminino</option>
+			</select>
+
+			<input 	name="telefone" id = "id_telefone" class = "form-control"
+					placeholder="Telefone *">
+
+			<input 	name="data_nascimento" id = "id_data_nascimento" class = "form-control" type="date"
+					placeholder="Data de nascimento*">
+
+			<hr/>
+
+			<input 	name="email" id = "id_email" class = "form-control"
+					placeholder="E-mail *" required>
+
+			<input 	name="nome_empresa" id = "nome_empresa" class = "form-control"
+					placeholder="Empresa *" required>
+
+			<input 	name="usuario" id = "id_usuario" class = "form-control"
+					placeholder="Usuario" required>
+
+			<input 	name="senha" id = "id_senha" class = "form-control"
+					type = "password" placeholder="Senha" required>
+			<hr/>
+			<!--{{form.as_p}}-->
+			<button class="btn btn-lg btn-primary btn-block"
+					type = "submit" value="Login">Registrar</button>
+
+				{% if form.errors %}
+					<div class="alert alert-danger">
+						<button type="button" class="close" data-dismiss="alert"
+						aria-hidden="true">
+						</button>
+						{{ form.non_field_errors }}
+					</div>
+				{% endif %}
+		</form>
+	</div>
+	<div class=" col-12 col-md-2 col-xl-2" >
+	</div>
+</div>
+{% endblock %}

@@ -1,0 +1,148 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Danet seven</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+	<!--<link rel="stylesheet" href="{% static 'styles/bootstrap.css' %}">-->
+	<!--<link rel="stylesheet" href="{% static 'styles/main.css' %}">-->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
+<body class="bg-light">
+    <div class="container-fluid ">
+        <ul class="nav justify-content-end bg-white  ">
+            {%if logado.usuario.is_superuser%}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'registrar_super_user' %}">Registrar super usuario</a>
+                </li>
+            {% endif%}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'time_line' %}">Timeline</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'logout' %}">Sair</a>
+            </li>
+        </ul>
+        <div class="row">
+            <div class="col-12 col-md-3 col-xl-3 text-center ">
+                {%block rename%}
+                {%if logado.convites_recebidos.all %}
+                <div class="card-body">
+                    <h5 class="card-title">Convites recebidos</h5>
+                </div>
+                {%for convite in logado.convites_recebidos.all%}
+                    <div class="card" style="width: 18rem;">
+                      <div class="card-body">
+                        <h5 class="card-title">Convite recebido</h5>
+                        <p class="card-text">{{convite}}</p>
+                        <a href="{% url 'aceitar' convite.id %}" class="card-link">Aceitar</a>
+                        <a href="{% url 'recusar' convite.id %}" class="card-link">Recusar</a>
+                      </div>
+                    </div>
+                {% endfor %}
+            {%endif%}
+
+            {%if logado.convites_enviados.all %}
+                <div class="card-body">
+                    <h5 class="card-title">Convites enviados</h5>
+                </div>
+                {%for convite in logado.convites_enviados.all%}
+                    <div class="card" style="width: 18rem;">
+                      <div class="card-body">
+                        <h5 class="card-title">Convite enviado</h5>
+                        <p class="card-text">{{convite}}</p>
+                        <a href="{% url 'apagar_solicitacao' convite.id%}" class="card-link"
+                        onclick="return confirm('Deletar solicitação?')">
+                            Apagar</a>
+                      </div>
+                    </div>
+                {% endfor %}
+            {%endif%}
+            {%endblock%}
+            </div >
+
+            <div class="col-12 col-md-6 col-xl-6 " >
+                {%block content%}
+                    <span>Teste</span>
+                {%endblock%}
+            </div>
+
+            <div class="col-12 col-md-3 col-xl-3 text-center ">
+                {%block aside%}
+
+                <div class="card-body">
+                    <h5 class="card-title">Alterar senha</h5>
+                </div>
+                    <div class="card" style="width: 18rem;">
+                      <div class="card-body">
+                           <form method="post" action="{%url 'alterar_senha' %}" class="form-group">
+                          {% csrf_token %}
+                               <input type="password" name="old_password" autofocus required id="id_old_password" class="form-control"
+                                      placeholder="Digite a senha atual"/>
+                               <input type="password" name="new_password1" required id="id_new_password1" class="form-control"
+                                      placeholder= "Digite a senha nova"/>
+                               <input type="password" name="new_password2" required id="id_new_password2" class="form-control"
+                                      placeholder="Confirme a nova senha"/>
+                               <hr/>
+                               <div class="form-group">
+                                    <button type="submit" class="btn btn-primary">Salvar alterações</button>
+                               </div>
+
+                               {% if form.errors %}
+                                    <div   class="alert alert-danger">
+                                        <button type="button" class="close" data-dismiss="alert"
+                                            aria-hidden="true">
+                                        </button>
+                                        <h6>por favor, verifique o Email e/ou senha informados</h6>
+                                            {{ form.errors}}
+                                    </div>
+                               {% endif%}
+                        </form>
+                      </div>
+                    </div>
+
+                {%if logado.contatos.all %}
+                <div class="card-body">
+                    <h5 class="card-title">Amigos</h5>
+                </div>
+                {%for contato in logado.contatos.all%}
+                    <div class="card" style="width: 18rem;">
+                      <div class="card-body">
+                        <a href = "{% url 'exibir' contato.id %}" class="card-link">
+                            {{contato.nome}}
+                        </a>
+                        <p class="card-text">{{contato.usuario.email}}</p>
+                      </div>
+                    </div>
+                {% endfor %}
+                {%endif%}
+                {%endblock%}
+
+                {%if logado.bloqueados.all %}
+                <div class="card-body">
+                    <h5 class="card-title">Bloqueados</h5>
+                </div>
+                {%for contato in logado.bloqueados.all%}
+                    <div class="card" style="width: 18rem;">
+                      <div class="card-body">
+                            {{contato.nome}}
+                        <p class="card-text">{{contato.usuario.email}}</p>
+                          <a href="{% url 'desbloquear_contato' contato.id %}" class="btn btn-primary"
+                             onclick="return confirm('Desbloquear contato?')">
+			                    Desbloquear
+                          </a>
+                      </div>
+                    </div>
+                {% endfor %}
+                {%endif%}
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+</body>
+</html>
