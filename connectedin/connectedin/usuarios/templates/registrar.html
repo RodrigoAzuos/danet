@@ -1,9 +1,9 @@
 {% extends "base_usuario.html"%}
 {% block content %}
 <div class="row">
-	<div class=" col-12 col-md-3 col-xl-3" >
+	<div class=" col-12 col-md-4 col-xl-4" >
 	</div>
-	<div class="col-12 col-md-6 col-xl-6">
+	<div class="col-12 col-md-4 col-xl-4">
 		<form class = "form-signin"  method="post">
 			{% csrf_token %}
 
@@ -43,18 +43,35 @@
 			<!--{{form.as_p}}-->
 			<button class="btn btn-lg btn-primary btn-block"
 					type = "submit" value="Login">Registrar</button>
-
+			<hr/>
 				{% if form.errors %}
-					<div class="alert alert-danger">
-						<button type="button" class="close" data-dismiss="alert"
-						aria-hidden="true">
-						</button>
-						{{ form.non_field_errors }}
-					</div>
-				{% endif %}
+                    <div class="alert alert-danger">
+                        <button type="button" class="close" data-dismiss="alert"
+                        aria-hidden="true">
+                        </button>
+                        por favor, verifique erros
+						{{ form.errors }}
+                    </div>
+                {% endif %}
+
+				 {% if form.errors %}
+
+					   {% for fild in form %}
+							{{fild.errors}}
+							{% for erro in fild.errors %}
+							{{erro}}
+							<div   class="alert alert-danger">
+								<button type="button" class="close" data-dismiss="alert"
+									aria-hidden="true">
+								</button>
+									{{erro}}
+							</div>
+						{% endfor %}
+					{%endfor%}
+				{% endif%}
 		</form>
 	</div>
-	<div class=" col-12 col-md-2 col-xl-2" >
+	<div class=" col-12 col-md-4 col-xl-4" >
 	</div>
 </div>
 {% endblock %}

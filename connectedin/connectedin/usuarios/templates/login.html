@@ -1,10 +1,10 @@
 {% extends "base_usuario.html" %}
 {% block content %}
     <div class="row">
-        <div class=" col-12 col-md-3 col-xl-3" >
+        <div class=" col-12 col-md-4 col-xl-4" >
 
         </div>
-        <div class="panel col-12 col-md-6 col-xl-6 center">
+        <div class="panel col-12 col-md-4 col-xl-4 center">
             <form class=" form-group " role="form"
                   action="{% url 'login' %}"
                     method="post">
@@ -29,9 +29,9 @@
                         aria-hidden="true">
                         </button>
                         por favor, verifique o Email e/ou senha informados
-                    {{ form.errors}}
                     </div>
                 {% endif %}
+
                 <div class="panel panel-defaut text-certer">
                     <a href="{% url 'registrar'  %}" class="">Registre-se</a> |
                     <a href="{% url 'resetar_senha'  %}"  class="forgot-password">Esqueceu a senha?</a>
@@ -39,7 +39,7 @@
 
         </form>
     </div>
-        <div class=" col-12 col-md-3 col-xl-3" >
+        <div class=" col-12 col-md-4 col-xl-4" >
 
         </div>
     </div>

@@ -90,13 +90,18 @@
                                </div>
 
                                {% if form.errors %}
+
+                               {% for fild in form %}
+                                    {% for erro in fild.errors %}
+
                                     <div   class="alert alert-danger">
                                         <button type="button" class="close" data-dismiss="alert"
                                             aria-hidden="true">
                                         </button>
-                                        <h6>por favor, verifique o Email e/ou senha informados</h6>
-                                            {{ form.errors}}
+                                            {{erro}}
                                     </div>
+                                    {% endfor %}
+                               {%endfor%}
                                {% endif%}
                         </form>
                       </div>

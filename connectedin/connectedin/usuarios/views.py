@@ -26,7 +26,6 @@ class RegistrarUsuarioView(View):
 
     def post(self, request):
         form = RegistrarUsuarioForm(request.POST)
-        print(form.data)
 
         if (form.is_valid()):
             dados = form.data
@@ -34,6 +33,7 @@ class RegistrarUsuarioView(View):
             try:
                 perfil = Perfil(sexo=dados['sexo'],
                             telefone=dados['telefone'],
+                            nome_empresa=dados['nome_empresa'],
                             data_nascimento=dados['data_nascimento'])
 
                 usuario = User.objects.create_user(username=dados['usuario'],
@@ -43,7 +43,6 @@ class RegistrarUsuarioView(View):
                                                    password=dados['senha'])
 
                 perfil.usuario = usuario
-
                 perfil.save()
 
                 return redirect('index')
@@ -59,7 +58,7 @@ class RegistrarUsuarioView(View):
 class RegistrarSuperUsuarioView(View):
 
     def get(self, request):
-        print("super")
+
         form = RegistrarUsuarioForm
         return render(request, 'registrar.html', {'form': form})
 
@@ -68,11 +67,12 @@ class RegistrarSuperUsuarioView(View):
 
         if (form.is_valid()):
             dados = form.data
-            print("super")
+
 
             try:
                 perfil = Perfil(sexo=dados['sexo'],
                             telefone=dados['telefone'],
+                            nome_empresa=dados['nome_empresa'],
                             data_nascimento=dados['data_nascimento'])
 
                 usuario = User.objects.create_superuser(username=dados['usuario'],

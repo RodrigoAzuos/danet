@@ -32,7 +32,7 @@ def convidar(request, perfil_id):
 		perfil = get_perfil_logado(request)
 		perfil_convidado = Perfil.objects.get(id = perfil_id)
 		perfil.convidar(perfil_convidado)
-		return redirect('index')
+		return redirect('time_line')
 
 @login_required(login_url='/login')
 def get_perfil_logado(request):
@@ -64,7 +64,7 @@ def bloquear_contato(request, perfil_id):
 	perfil_bloqueado = Perfil.objects.get(pk=perfil_id)
 	perfil.bloquear(perfil_bloqueado)
 
-	return redirect('index')
+	return redirect('time_line')
 
 @login_required(login_url='/login')
 def desbloquear_contato(request, perfil_id):
