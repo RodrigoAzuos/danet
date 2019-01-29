@@ -6,7 +6,7 @@ class PostModelForm(ModelForm):
 
     class Meta:
         model = Post
-        fields = ('resumo',)
+        fields = ('resumo','foto',)
         widgets = {
             'resumo': Textarea(attrs={'cols': 80, 'rows': 20}),
         }

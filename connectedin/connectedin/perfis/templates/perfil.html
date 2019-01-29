@@ -18,39 +18,78 @@
 			<a class="nav-link" href="{% url 'logout' %}">Sair</a>
 		  </li>
 	</ul>
-		<div class="card">
-  		<h5 class="card-header">Detalhes do Perfil</h5>
 
-			<div class="card-body">
-    	<h5 class="card-title">{{perfil.nome}}</h5>
-    	<div class="card-text">
-			<ul>
-				<li><em>e-mail: {{perfil.usuario.email}}</em></li>
-				<li>Empresa: {{perfil.nome_empresa}}</li>
-				<li>Fone: {{perfil.telefone}}</li>
-				<li>Data de nascimento: {{perfil.data_nascimento}}</li>
-			</ul>
+			<div class="row">
+                    {% if alerta %}
+                        {% if alerta.tipo == tipos.0%}
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                {{alerta.mensagem}}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        {% endif %}
+                        {% if alerta.tipo == tipos.1%}
+                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                {{alerta.mensagem}}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        {% endif %}
+                        {% if alerta.tipo == tipos.2%}
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    {{alerta.mensagem}}
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                        {% endif %}
+                    {% endif %}
+            </div>
+	{% if not desativado %}
+			<div class="card">
+			<h5 class="card-header">Detalhes do Perfil</h5>
+
+				<div class="card-body">
+			<h5 class="card-title">{{perfil.nome}}</h5>
+			<div class="card-text">
+				<ul>
+					<li><em>e-mail: {{perfil.usuario.email}}</em></li>
+					<li>Empresa: {{perfil.nome_empresa}}</li>
+					<li>Fone: {{perfil.telefone}}</li>
+					<li>Data de nascimento: {{perfil.data_nascimento}}</li>
+				</ul>
+			</div>
+
+			{% if  convidar %}
+				<a href = "{% url 'convidar' perfil.id %}" class="btn btn-success">
+					Convidar
+				</a>
+			{%endif%}
+
+			{%if perfil in logado.contatos.all%}
+				<a href="{% url 'bloquear_contato' perfil.id %}" class="btn btn-danger"
+					onclick="return confirm('Bloquear contato?')">
+					Bloquear
+				</a>
+				<a href="{% url 'desfazer_amizade' perfil.id %}" class="btn btn-warning"
+					onclick="return confirm('Desfazer amizade?')">
+					Desfazer amizade
+				</a>
+			{% endif %}
+
+		  </div>
 		</div>
+	{%else%}
+		 <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            Conta desativada, logo logo seu amigo estará de volta!
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+	{%endif%}
 
-    	{% if  convidar %}
-			<a href = "{% url 'convidar' perfil.id %}" class="btn btn-success">
-				Convidar
-			</a>
-		{%endif%}
-
-		{%if perfil in logado.contatos.all%}
-			<a href="{% url 'bloquear_contato' perfil.id %}" class="btn btn-danger"
-				onclick="return confirm('Bloquear contato?')">
-				Bloquear
-			</a>
-			<a href="{% url 'desfazer_amizade' perfil.id %}" class="btn btn-warning"
-				onclick="return confirm('Desfazer amizade?')">
-				Desfazer amizade
-			</a>
-		{% endif %}
-
-  </div>
-</div>
 
  	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>

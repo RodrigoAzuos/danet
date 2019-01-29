@@ -29,7 +29,7 @@ class Perfil(Base):
 	telefone = models.CharField(max_length = 15, null = False, blank=False)
 	nome_empresa = models.CharField(max_length = 255, null = False, blank=False)
 	data_nascimento = models.DateField(null=False, blank=False)
-	foto = models.ImageField('Foto', upload_to='imagens/%Y/', null=True, blank=True)
+	foto = models.ImageField('Foto', upload_to='imagens/%Y/', default='imagens/2019/', null=True, blank=True)
 	contatos = models.ManyToManyField('Perfil')
 	usuario = models.OneToOneField(User, on_delete=models.CASCADE, related_name='perfil')
 	bloqueados = models.ManyToManyField('Perfil', related_name='contatos_bloqueados')
@@ -49,8 +49,9 @@ class Perfil(Base):
 
 	def convidar(self, perfil_convidado):
 
-		c = Convite(solicitante = self, convidado = perfil_convidado)
-		c.save()
+		if self.id != perfil_convidado.id:
+			c = Convite(solicitante = self, convidado = perfil_convidado)
+			c.save()
 
 	def bloquear(self, perfil_bloqueado):
 
@@ -75,6 +76,9 @@ class Perfil(Base):
 		self.save()
 		perfil.save()
 
+	def desativado(self):
+		return self.justificativas.filter(situacao=True).exists()
+
 class Convite(Base):
 
 	solicitante = models.ForeignKey(Perfil, on_delete = models.CASCADE,
@@ -93,3 +97,19 @@ class Convite(Base):
 	def __str__(self):
 		return 'de %s para %s' % (self.solicitante, self.convidado)
 
+class Justificativa(Base):
+
+	descricao = models.CharField('descricao',max_length=512, null=False,blank=False)
+	situacao = models.BooleanField('situacao', default=False)
+	perfil = models.ForeignKey(Perfil, on_delete=models.CASCADE, related_name='justificativas')
+
+	def __str__(self):
+		return '%s - %s' % (str(self.situacao), self.descricao)
+
+	def confirmar(self):
+		self.situacao = True
+		self.save()
+
+	def invalidar(self):
+		self.situacao = False
+		self.save()

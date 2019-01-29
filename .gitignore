@@ -260,5 +260,6 @@ fabric.properties
 
 ### Python Patch ###
 .venv/
-
+/media_cdn
+*.jpg
 # End of https://www.gitignore.io/api/pycharm,python,django

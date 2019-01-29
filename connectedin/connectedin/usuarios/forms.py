@@ -13,6 +13,7 @@ class RegistrarUsuarioForm(forms.Form):
 
 
     usuario = forms.CharField(required=True)
+    foto = forms.ImageField(required=False)
     email = forms.EmailField(required=True)
     senha = forms.CharField(required=True)
     telefone = forms.CharField(required=True)
@@ -23,6 +24,7 @@ class RegistrarUsuarioForm(forms.Form):
     nome_empresa = forms.CharField(required=True)
 
 
+
     def is_valid(self):
         valid = True
 
@@ -31,9 +33,14 @@ class RegistrarUsuarioForm(forms.Form):
             valid = False
 
         user_exists = User.objects.filter(username=self.data['usuario']).exists()
+        email_exists = User.objects.filter(email=self.data['email']).exists()
 
         if user_exists:
             self.adiciona_erro('Usuario já existente')
+            valid = False
+
+        if email_exists:
+            self.adiciona_erro('Email já existe')
             valid = False
 
         return valid

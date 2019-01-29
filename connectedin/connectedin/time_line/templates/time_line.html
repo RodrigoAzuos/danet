@@ -6,10 +6,21 @@
         </div>
         <div class="col-12 col-md-6 col-xl-6">
             <br/>
-        <form method="post" class="form-group" action="{% url 'time_line' %}">
+        <form method="post" class="form-group" action="{% url 'time_line' %}" enctype="multipart/form-data">
             {% csrf_token %}
+
             <textarea name="resumo"  rows="3" class="form-control"
                       maxlength="10000" required id="id_resumo" placeholder="Conte-nos algo!"></textarea>
+            <!--<input type="file" name="foto" id="id_foto">-->
+            <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroupFileAddon01">Upload</span>
+                  </div>
+                  <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="id_foto"  name="foto" aria-describedby="inputGroupFileAddon01">
+                        <label class="custom-file-label" for="id_foto"> Escolher foto </label>
+                  </div>
+            </div>
             <button type="submit" value="postar" class="btn-primary justify-content-end ">Postar</button>
 
             {% if form.errors %}
@@ -48,11 +59,14 @@
         {% endfor %}
     {%endif%}
 
-    {%for post in posts%}
-        <div class="card text-center">
+    {%for post in posts.object_list%}
+        <div class="card text-left">
             <div class="card-header">
                 {{post.autor}}
             </div>
+            {% if post.foto %}
+                <img class="card-img-top img-fluid" src="{{post.foto.url}}" alt="Imagem de capa do card">
+            {% endif %}
             <div class="card-body">
                 <p class="card-text">{{post.resumo}}</p>
                 {% if post.autor == logado or logado.usuario.is_superuser%}
@@ -66,10 +80,62 @@
             </div>
         </div>
     {%endfor%}
+    <hr/>
+        <div class="d-flex justify-content-center">
+            <nav aria-label="...">
+              <ul class="pagination ">
+                 {%if posts.has_previous%}
+                    <li class="page-item">
+                      <a class="page-link" href="?page={{ posts.previous_page_number }}" tabindex="-1">Anterior</a>
+                    </li>
+                  {%else%}
+                  <li class="page-item disabled">
+                      <a class="page-link" href="#" tabindex="-1">Anterior</a>
+                  </li>
+                  {%endif%}
+                {%if posts.has_previous%}
+                  <li class="page-item"><a class="page-link" href="?page={{posts.previous_page_number }}">{{posts.previous_page_number}}</a></li>
+                {%endif%}
+                <li class="page-item active">
+                  <a class="page-link" href="?page={{posts.number }}">{{posts.number}} <span class="sr-only">(current)</span></a>
+                </li>
+                {% if posts.has_next %}
+                  <li class="page-item"><a class="page-link" href="?page={{posts.next_page_number }}">{{posts.next_page_number}}</a></li>
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ posts.next_page_number }}">Próxima</a>
+                </li>
+                {%else%}
+                 <li class="page-item disabled">
+                    <a class="page-link" href="#">Próxima</a>
+                 </li>
+                 {% endif %}
+              </ul>
+            </nav>
+        </div>
+
+
 {% endblock%}
 
-{%block rename%}
+{%block nav%}
+{%if logado.contatos.all %}
+    <div class="card-body">
+        <h5 class="card-title">Amigos</h5>
+    </div>
+    {%for contato in logado.contatos.all%}
+        <div class="card" style="width: 18rem;">
+          <div class="card-body">
+            <a href = "{% url 'exibir' contato.id %}" class="card-link">
+			    {{contato.nome}}
+            </a>
+            <p class="card-text">{{contato.usuario.email}}</p>
+          </div>
+        </div>
+    {% endfor %}
+{%endif%}
 
+{%endblock%}
+
+{%block aside%}
 {%if logado.convites_recebidos.all %}
     <div class="card-body">
         <h5 class="card-title">Convites recebidos</h5>
@@ -97,24 +163,6 @@
             <p class="card-text">{{convite}}</p>
             <a href="{% url 'apagar_solicitacao' convite.id%}" class="card-link"
                onclick="return confirm('Apagar solicitação?')">Apagar</a>
-          </div>
-        </div>
-    {% endfor %}
-{%endif%}
-{%endblock%}
-
-{%block aside%}
-{%if logado.contatos.all %}
-    <div class="card-body">
-        <h5 class="card-title">Amigos</h5>
-    </div>
-    {%for contato in logado.contatos.all%}
-        <div class="card" style="width: 18rem;">
-          <div class="card-body">
-            <a href = "{% url 'exibir' contato.id %}" class="card-link">
-			    {{contato.nome}}
-            </a>
-            <p class="card-text">{{contato.usuario.email}}</p>
           </div>
         </div>
     {% endfor %}

@@ -6,7 +6,11 @@ from perfis import views
 urlpatterns = [
     path('', views.index, name = 'index'),
     path('perfil/<int:perfil_id>', views.exibir_perfil, name='exibir'),
-    path('perfil/<int:perfil_id>/desfazer_amizade', views.desfazer_amizade, name='desfazer_amizade'),
+    path('perfil/<int:perfil_id>/desfazer-amizade', views.desfazer_amizade, name='desfazer_amizade'),
+    path('desativar-conta', views.desativar_conta, name='desativar_conta'),
+    path('confirmar-desativacao/<int:justificativa_id>', views.confirmar_justificativa, name='confirmar_desativacao'),
+    path('apagar-justificativa/<int:justificativa_id>', views.apagar_justificativa, name='apagar_desativacao'),
+    path('ativar-conta', views.ativar_conta, name='ativar_conta'),
 
     path('convidar/<int:perfil_id>', views.convidar, name='convidar'),
     path('aceitar/<int:convite_id>', views.aceitar, name='aceitar'),

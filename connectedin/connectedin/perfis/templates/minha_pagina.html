@@ -14,6 +14,51 @@
 				<li>Data de nascimento: {{logado.data_nascimento}}</li>
 			</ul>
 		</div>
+
+		<div class="text-right">
+			<a href="{% url 'desativar_conta'%}" class="text-rigth">Desativar conta</a>
+		</div>
+  </div>
+
+</div>
+
+{% if logado.usuario.is_superuser %}
+<div class="card">
+  		<h5 class="card-header">Usuários</h5>
+
+	<div class="card-body">
+		<div class="card-text">
+			<table class="table table-striped">
+				  <thead>
+					<tr>
+					  <th scope="col">#</th>
+					  <th scope="col">Usuário</th>
+					  <th scope="col">E-mail</th>
+					  <th scope="col">Ação</th>
+					</tr>
+				  </thead>
+				  <tbody>
+				  {% for perfil in perfis %}
+					<tr>
+					  <th scope="row">{{perfil.id}}</th>
+					  <td>{{perfil.nome}}</td>
+					  <td>{{perfil.usuario.email}}</td>
+					  {% if not perfil.usuario.is_superuser %}
+							<td><a href="{% url 'tornar_superuser' perfil.id %}"
+								   onclick="return confirm('Deseja mesmo tornar super usuario?')"
+								   class="btn btn-primary"> Tornar administrador </a></h6></td>
+						{% else %}
+						<td> - </td>
+					  {% endif %}
+					</tr>
+				  {% endfor %}
+				  </tbody>
+			</table>
+
+		</div>
   </div>
 </div>
+
+{% endif %}
+
 {%endblock%}

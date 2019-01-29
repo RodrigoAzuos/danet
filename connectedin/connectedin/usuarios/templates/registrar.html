@@ -4,38 +4,61 @@
 	<div class=" col-12 col-md-4 col-xl-4" >
 	</div>
 	<div class="col-12 col-md-4 col-xl-4">
-		<form class = "form-signin"  method="post">
+
+		{% if form.errors %}
+			<div class="alert alert-danger">
+				<button type="button" class="close" data-dismiss="alert"
+				aria-hidden="true">
+				</button>
+				por favor, verifique erros
+				{{ form.errors }}
+			</div>
+        {% endif %}
+
+		<form action="{% url 'registrar' %}" class = "form-signin"  method="post" enctype="multipart/form-data">
 			{% csrf_token %}
 
 			<h2 class="form-signin-heading">Crie seu usuário</h2>
 
 			<input 	name="first_name" id = "id_first_name" class = "form-control"
-					placeholder="Primeiro nome" required autofocus>
+					placeholder="Primeiro nome" value="{{ form.first_name.value|default:'' }}" required autofocus>
 
 			<input 	name="last_name" id = "id_last_name" class = "form-control"
-					placeholder="Ultimo nome" required>
+					placeholder="Ultimo nome" value="{{form.last_name.value|default:''}}" required>
+
+			<div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroupFileAddon01">Upload</span>
+                  </div>
+                  <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="id_foto"  name="foto"
+							   value="{{form.foto.value|default:''}}" aria-describedby="inputGroupFileAddon01">
+                        <label class="custom-file-label" for="id_foto"> Escolher foto </label>
+                  </div>
+            </div>
 
 			<select name="sexo" id="id_sexo" class="form-control">
 				<option value="M">Masculino</option>
 				<option value="F">Feminino</option>
 			</select>
 
+
 			<input 	name="telefone" id = "id_telefone" class = "form-control"
-					placeholder="Telefone *">
+					placeholder="Telefone *" value="{{form.telefone.value|default:''}}">
 
 			<input 	name="data_nascimento" id = "id_data_nascimento" class = "form-control" type="date"
-					placeholder="Data de nascimento*">
+					placeholder="Data de nascimento*" value="{{form.data_nascimento.value|default:''}}">
 
 			<hr/>
 
 			<input 	name="email" id = "id_email" class = "form-control"
-					placeholder="E-mail *" required>
+					placeholder="E-mail *" value="{{form.email.value|default:''}}" required>
 
 			<input 	name="nome_empresa" id = "nome_empresa" class = "form-control"
-					placeholder="Empresa *" required>
+					placeholder="Empresa *" value="{{form.nome_empresa.value|default:''}}" required>
 
 			<input 	name="usuario" id = "id_usuario" class = "form-control"
-					placeholder="Usuario" required>
+					placeholder="Usuario" value="{{form.usuario.value|default:''}}" required>
 
 			<input 	name="senha" id = "id_senha" class = "form-control"
 					type = "password" placeholder="Senha" required>
@@ -44,31 +67,21 @@
 			<button class="btn btn-lg btn-primary btn-block"
 					type = "submit" value="Login">Registrar</button>
 			<hr/>
-				{% if form.errors %}
-                    <div class="alert alert-danger">
-                        <button type="button" class="close" data-dismiss="alert"
-                        aria-hidden="true">
-                        </button>
-                        por favor, verifique erros
-						{{ form.errors }}
-                    </div>
-                {% endif %}
 
-				 {% if form.errors %}
+				 <!--{% if form.errors %}-->
 
-					   {% for fild in form %}
-							{{fild.errors}}
-							{% for erro in fild.errors %}
-							{{erro}}
-							<div   class="alert alert-danger">
-								<button type="button" class="close" data-dismiss="alert"
-									aria-hidden="true">
-								</button>
-									{{erro}}
-							</div>
-						{% endfor %}
-					{%endfor%}
-				{% endif%}
+					   <!--{% for fild in form %}-->
+							<!--{{fild.errors}}-->
+							<!--{% for erro in fild.errors %}-->
+							<!--<div   class="alert alert-danger">-->
+								<!--<button type="button" class="close" data-dismiss="alert"-->
+									<!--aria-hidden="true">-->
+								<!--</button>-->
+									<!--{{erro}}-->
+							<!--</div>-->
+						<!--{% endfor %}-->
+					<!--{%endfor%}-->
+				<!--{% endif%}-->
 		</form>
 	</div>
 	<div class=" col-12 col-md-4 col-xl-4" >

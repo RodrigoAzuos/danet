@@ -1,0 +1,48 @@
+{% extends "base_minha_pagina.html" %}
+
+{%block content%}
+    <br/>
+
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+      A conta desativada poderá ser reativada no próximo login. Estamos te aguardando!
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
+    <form method="post" class="form-group" action="{% url 'desativar_conta' %}">
+            {% csrf_token %}
+            <textarea name="descricao"  rows="3" class="form-control"
+                      maxlength="10000" required id="id_descricao" placeholder="Digite a justificativa aqui" onfocus="True"></textarea>
+        <div class="form-control text-rigth">
+            <button type="submit" value="Desativa conta" class="btn-warning justify-content-end ">Desativar conta</button>
+        </div>
+            {% if form_justificativa.errors %}
+
+               {% for fild in form_justificativa %}
+                    {% for erro in fild.errors %}
+
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <button type="button" class="close" data-dismiss="alert"
+                            aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                            {{erro}}
+                    </div>
+                    {% endfor %}
+               {%endfor%}
+           {% endif%}
+        </form>
+
+    {% if justificativa %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            Confimar desativação de conta?
+            <a href="{% url 'confirmar_desativacao' justificativa.id %}">Sim</a>
+            <a href="{% url 'apagar_desativacao' justificativa.id %}">Não</a>
+
+            <a href="{% url 'apagar_desativacao' justificativa.id %}" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </a>
+        </div>
+    {% endif%}
+{%endblock%}

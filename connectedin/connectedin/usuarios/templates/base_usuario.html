@@ -26,6 +26,35 @@
 
 		<div class="row ">
 			<div class="col-12 col-md-12 col-xl-12 text-center">
+
+				<div class="row">
+                    {% if alerta %}
+                        {% if alerta.tipo == tipos.0%}
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                {{alerta.mensagem}}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        {% endif %}
+                        {% if alerta.tipo == tipos.1%}
+                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                {{alerta.mensagem}}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        {% endif %}
+                        {% if alerta.tipo == tipos.2%}
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    {{alerta.mensagem}}
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                        {% endif %}
+                    {% endif %}
+            	</div>
 				{% block content %}
 				{% endblock %}
 		</div>

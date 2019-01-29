@@ -33,3 +33,12 @@ class Comentario(Base):
 
     def __str__(self):
         return self.descricao
+
+class Alerta(models.Model):
+
+    mensagem = models.CharField('Mensagem', max_length=256, blank=False, null=False)
+    tipo = models.CharField('Mensagem', max_length=256, blank=False, null=False)
+    perfil = models.ForeignKey(Perfil, on_delete = models.CASCADE, related_name = 'alertas', blank=False, null=False)
+
+    def __str__(self):
+        return self.mensagem
