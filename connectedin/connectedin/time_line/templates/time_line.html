@@ -131,7 +131,19 @@
           </div>
         </div>
     {% endfor %}
-{%endif%}
+    {% else%}
+
+        <div class="card-body">
+            <h5 class="card-title">Amigos</h5>
+        </div>
+
+            <div class="card" style="width: 18rem;">
+              <div class="card-body">
+                <p class="card-text"> Ainda não possuei amigos! </p>
+              </div>
+            </div>
+
+    {%endif%}
 
 {%endblock%}
 
@@ -150,7 +162,18 @@
           </div>
         </div>
     {% endfor %}
-{%endif%}
+    {%else%}
+
+        <div class="card-body">
+                <h5 class="card-title">Convites recebidos</h5>
+            </div>
+
+                <div class="card" style="width: 18rem;">
+                  <div class="card-body">
+                    <p class="card-text">Sem convites recebidos!</p>
+                  </div>
+                </div>
+    {%endif%}
 
 {%if logado.convites_enviados.all %}
     <div class="card-body">
@@ -166,5 +189,14 @@
           </div>
         </div>
     {% endfor %}
+    {%else%}
+        <div class="card-body">
+            <h5 class="card-title">Convites enviados</h5>
+                </div>
+
+                <div class="card" style="width: 18rem;">
+                  <div class="card-body">
+                    <h5 class="card-title"> Sem convites enviadoss!</h5>
+                </div>
 {%endif%}
 {%endblock%}

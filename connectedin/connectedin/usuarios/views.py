@@ -23,7 +23,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 # Create your views here.
 from time_line.models import Alerta
 
-@transaction.Atomic(using=None, savepoint=True)
+
 class RegistrarUsuarioView(View):
 
     def get(self, request):
@@ -31,6 +31,7 @@ class RegistrarUsuarioView(View):
 
         return render(request, 'registrar.html', {'form': form})
 
+    @transaction.Atomic(using=None, savepoint=True)
     def post(self, request):
         form = RegistrarUsuarioForm(request.POST, request.FILES)
 

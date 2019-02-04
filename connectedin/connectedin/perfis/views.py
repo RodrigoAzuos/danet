@@ -82,6 +82,7 @@ def apagar(request, convite_id):
 	criar_alerta(request, "Convite ignorado, não se preocupe que manteremos o sigilo", TIPOS_ALERTA[2])
 	return redirect('index')
 
+@transaction.Atomic(using=None, savepoint=True)
 @login_required(login_url='/login')
 def bloquear_contato(request, perfil_id):
 
@@ -94,6 +95,7 @@ def bloquear_contato(request, perfil_id):
 
 	return redirect('time_line')
 
+@transaction.Atomic(using=None, savepoint=True)
 @login_required(login_url='/login')
 def desbloquear_contato(request, perfil_id):
 
@@ -139,6 +141,7 @@ def pode_convidar(request, perfil_id):
 		return False
 
 	return True
+
 @login_required(login_url='/login')
 def desativar_conta(request):
 
