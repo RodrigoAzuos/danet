@@ -1,46 +1,49 @@
 {% extends "base_usuario.html" %}
 {% block content %}
-    <div class="row">
-        <div class=" col-12 col-md-4 col-xl-4" >
+        <div class="row">
+            <div class=" col-12 col-md-4 col-xl-4" >
 
-        </div>
-        <div class="panel col-12 col-md-4 col-xl-4 center">
-            <form class=" form-group " role="form"
-                  action="{% url 'login' %}"
-                    method="post">
-                {% csrf_token %}
+            </div>
+            <div class="card col-12 col-md-4 col-xl-4 center ">
+            <div class="panel card-body ">
+                <form class=" form-group " role="form"
+                      action="{% url 'login' %}"
+                        method="post">
+                    {% csrf_token %}
 
-                <h2 class="form-signin-heading">Login</h2>
+                    <h2 class="form-signin-heading">Login</h2>
 
-                <input type="text" id="id_username" name="username"
-                class="form-control" placeholder="Nome *" value="{{ form.username.value|default:'' }}" required autofocus>
-                <br/>
-                <input type="password" id="id_password" name="password"
-                class="form-control" placeholder="Senha *" required autofocus>
-                <br/>
-                <button class="btn btn-lg btn-primary btn-block"
-                type="submit" value="Login">Login</button>
+                    <input type="text" id="id_username" name="username"
+                    class="form-control" placeholder="Nome *" value="{{ form.username.value|default:'' }}" required autofocus>
+                    <br/>
+                    <input type="password" id="id_password" name="password"
+                    class="form-control" placeholder="Senha *" required autofocus>
+                    <br/>
+                    <button class="btn btn-lg btn-primary btn-block"
+                    type="submit" value="Login">Login</button>
 
-                <input type="hidden" value="next" value="{{ next }}"/>
+                    <input type="hidden" value="next" value="{{ next }}"/>
 
-                {% if form.errors %}
-                    <div class="alert alert-danger">
-                        <button type="button" class="close" data-dismiss="alert"
-                        aria-hidden="true">
-                        </button>
-                        por favor, verifique o Email e/ou senha informados
+                    {% if form.errors %}
+                        <div class="alert alert-danger">
+                            <button type="button" class="close" data-dismiss="alert"
+                            aria-hidden="true">
+                            </button>
+                            por favor, verifique o Email e/ou senha informados
+                        </div>
+                    {% endif %}
+
+                    <div class="panel panel-defaut text-certer">
+                        <a href="{% url 'registrar'  %}" class="">Registre-se</a> |
+                        <a href="{% url 'resetar_senha'  %}"  class="forgot-password">Esqueceu a senha?</a>
                     </div>
-                {% endif %}
 
-                <div class="panel panel-defaut text-certer">
-                    <a href="{% url 'registrar'  %}" class="">Registre-se</a> |
-                    <a href="{% url 'resetar_senha'  %}"  class="forgot-password">Esqueceu a senha?</a>
-                </div>
+                </form>
+            </div>
+            </div>
+            <div class=" col-12 col-md-4 col-xl-4" >
 
-        </form>
-    </div>
-        <div class=" col-12 col-md-4 col-xl-4" >
-
+            </div>
         </div>
-    </div>
+
 {% endblock %}

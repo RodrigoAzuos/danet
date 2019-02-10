@@ -1,46 +1,51 @@
 {%extends "base_usuario.html"%}
 {% block content %}
 <div class="row">
-<div class="col-12 col-md-4 col-xl-4">
-    <h1>Digite a nova senha</h1>
 
+    <div class="col-12 col-md-4 col-xl-4" >
 
-    <p>Por favor, informe sua nova senha duas vezes para que possamos verificar se você a digitou corretamente.</p>
+    </div>
+    <div class="col-12 col-md-4 col-xl-4 card">
 
-    <form method="post"><input type='hidden' class="form-group"/>
-        {% csrf_token %}
-    <fieldset class="module aligned">
-        <div class="form-row field-password1">
-            <input type="password" name="new_password1" required id="id_new_password1"
-                   class="form-control" placeholder="Digite a nova senha *"/>
-        </div>
-        <br/>
-        <div class="form-row field-password2">
-            <input type="password" name="new_password2" required id="id_new_password2"
-                   class="form-control" placeholder= "Confirme a nova senha *"/>
-        </div>
-        <hr/>
-        <input type="submit" value="Alterar minha senha" class="btn btn-primary"/>
-    </fieldset>
+    <div class="card-body">
+        <h1>Digite a nova senha</h1>
+        <p>Por favor, informe sua nova senha duas vezes para que possamos verificar se você a digitou corretamente.</p>
 
-        {% if form.errors %}
+        <form method="post"><input type='hidden' class="form-group"/>
+            {% csrf_token %}
+        <fieldset class="module aligned">
+            <div class="form-row field-password1">
+                <input type="password" name="new_password1" required id="id_new_password1"
+                       class="form-control" placeholder="Digite a nova senha *"/>
+            </div>
+            <br/>
+            <div class="form-row field-password2">
+                <input type="password" name="new_password2" required id="id_new_password2"
+                       class="form-control" placeholder= "Confirme a nova senha *"/>
+            </div>
+            <hr/>
+            <input type="submit" value="Alterar minha senha" class="btn btn-primary"/>
+        </fieldset>
 
-               {% for fild in form %}
-                    {% for erro in fild.errors %}
+            {% if form.errors %}
 
-                    <div   class="alert alert-danger">
-                        <button type="button" class="close" data-dismiss="alert"
-                            aria-hidden="true">
-                        </button>
-                            {{erro}}
-                    </div>
-                {% endfor %}
-            {%endfor%}
-        {% endif%}
-    </form>
+                   {% for fild in form %}
+                        {% for erro in fild.errors %}
+
+                        <div   class="alert alert-danger">
+                            <button type="button" class="close" data-dismiss="alert"
+                                aria-hidden="true">
+                            </button>
+                                {{erro}}
+                        </div>
+                    {% endfor %}
+                {%endfor%}
+            {% endif%}
+        </form>
+    </div>
     </div>
 </div>
-<div class="col-12 col-md-8 col-xl-8" >
+<div class="col-12 col-md-4 col-xl-4" >
 
 </div>
 {% endblock %}
