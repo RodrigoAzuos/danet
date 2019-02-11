@@ -21,16 +21,28 @@
                         <label class="custom-file-label" for="id_foto"> Escolher foto </label>
                   </div>
             </div>
+
+            <div class="form-control">
+                <input type="text", name="tags", id="id_tags" placeholder="Digites as tags sebaradas por virgula">
+            </div>
+            <!--{{form}}-->
             <button type="submit" value="postar" class="btn-primary justify-content-end ">Postar</button>
 
+
             {% if form.errors %}
-                <div class="alert alert-danger">
-                    <button type="button" class="close" data-dismiss="alert"
-                    aria-hidden="true">
-                    </button>
-                    {{ form.non_field_errors }}
-                </div>
-            {% endif %}
+
+                   {% for fild in form %}
+                        {% for erro in fild.errors %}
+
+                        <div   class="alert alert-danger">
+                            <button type="button" class="close" data-dismiss="alert"
+                                aria-hidden="true">
+                            </button>
+                                {{erro}}
+                        </div>
+                        {% endfor %}
+                   {%endfor%}
+               {% endif%}
         </form>
         </div>
         <div class="col-12 col-md-3 col-xl-3">

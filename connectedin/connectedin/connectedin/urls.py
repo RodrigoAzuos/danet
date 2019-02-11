@@ -24,6 +24,7 @@ urlpatterns = [
     path('', include('usuarios.urls')),
     path('', include('perfis.urls')),
     path('', include('time_line.urls')),
+    path('api/v1/', include('api.urls')),
 ]
 
 if settings.DEBUG:
