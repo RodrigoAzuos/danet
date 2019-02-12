@@ -222,8 +222,6 @@ def comentar(request, post_id):
     token = Token.objects.get(user_id=logado.id)
     comentar_api(token, post_id,request.POST['comentario'])
 
-    print(request.stream)
-
     return redirect('time_line')
 
 def deletar_comentario(request,post_id,pk):

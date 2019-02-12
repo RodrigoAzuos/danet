@@ -9,7 +9,7 @@ class Post(Base):
     resumo = models.CharField('Resumo', max_length=10000, null=False, blank=False)
     autor = models.ForeignKey(Perfil, null=False, blank=False, on_delete=models.CASCADE, related_name='posts')
     foto = models.ImageField('Foto', upload_to='imagens/%Y/',null=True,blank=True)
-    tags = models.ManyToManyField('Tag',  null=True, blank=True, related_name='posts')
+    tags = models.ManyToManyField('Tag', related_name='posts')
 
     class Meta:
         verbose_name = 'Post'
