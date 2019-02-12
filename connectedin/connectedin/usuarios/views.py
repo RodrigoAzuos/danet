@@ -1,27 +1,60 @@
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
-from django.http import HttpResponseRedirect
-from django.shortcuts import render
-from django.urls import reverse
-from django.utils.datastructures import MultiValueDict
 
-from django.views.generic.base import View
 
 from django.db import transaction
+from django.forms import forms
 
 from perfis.views import get_perfil_logado, criar_alerta, TIPOS_ALERTA
 from usuarios.forms import RegistrarUsuarioForm
-
-from django.contrib.auth.models import User
 from perfis.models import Perfil
-from django.shortcuts import redirect
-from django.contrib import messages
-from django.contrib.auth import update_session_auth_hash
-from django.contrib.auth.forms import PasswordChangeForm
 
+from django.shortcuts import render
+from django.views.generic.base import View
+from django.contrib.auth.models import User
+from django.shortcuts import redirect
+from django.contrib.auth import authenticate, login as auth_login, update_session_auth_hash
+from django.contrib.auth.hashers import make_password
+from django.contrib import messages
+from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
+from django.contrib.auth.hashers import check_password
+import os
 
 # Create your views here.
-from time_line.models import Alerta
+
+# metodo api_consumer
+from api_consumer.views import get_token
+
+
+def login(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(request.POST)
+        username = request.POST['username']
+        password = request.POST['password']
+
+        print(username)
+        print(password)
+
+        try:
+            usuario = User.objects.get(username=username)
+        except User.DoesNotExist:
+            messages.error(request, 'Este usuario não existe!')
+            return render(request, 'login.html', {'form': form})
+
+        match_check = check_password(password,usuario.password)
+        if not match_check:
+            messages.error(request, 'Usuário e/ou senha incorretos')
+
+            return render(request, 'login.html', {'form': form})
+        else:
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                get_token(username,password)
+                auth_login(request, user)
+                return redirect('index')
+    elif request.method == 'GET':
+        form = AuthenticationForm()
+    return render(request, 'login.html', {'form': form})
 
 
 class RegistrarUsuarioView(View):
@@ -68,7 +101,6 @@ class RegistrarUsuarioView(View):
 
         return render(request, 'registrar.html', {'form': form})
 
-
 class RegistrarSuperUsuarioView(View):
     pass
     #
@@ -107,7 +139,6 @@ class RegistrarSuperUsuarioView(View):
     #
     #
     #     return render(request, 'registrar.html', {'form': form})
-
 
 class AlterarSenhaView(View):
 

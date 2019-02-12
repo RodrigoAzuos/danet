@@ -9,7 +9,7 @@ urlpatterns = [
     path('registrar/', views.RegistrarUsuarioView.as_view() , name = 'registrar'),
     path('registrar_superusuario/', views.RegistrarSuperUsuarioView.as_view() , name = 'registrar_super_user'),
     path('perfil/<int:perfil_id>/tornar_superuser', views.tornar_superuser , name = 'tornar_superuser'),
-    path('login/', login, {'template_name': 'login.html'}, name='login'),
+    path('login/', views.login, name='login'),
     path('logout/', logout_then_login, {'login_url': 'login'},name= 'logout'),
 
     path('alterar-senha/', views.AlterarSenhaView.as_view(), name= 'alterar_senha'),

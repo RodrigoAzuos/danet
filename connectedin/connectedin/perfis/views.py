@@ -4,8 +4,11 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, redirect
 from django.db import transaction
 from time_line.models import Alerta
+
+from  api_consumer.views import post_justificativa, confirmar_justificativa as confirmar_justificativa_api, deletar_justificativa
 from .models import Perfil, Convite, Justificativa
 from .forms import JusificativaForm
+from rest_framework.authtoken.models import Token
 
 # Create your views here.
 TIPOS_ALERTA = ['success', 'warning', 'danger']
@@ -163,11 +166,9 @@ def desativar_conta(request):
 
 			if form_justificativa.is_valid():
 
-				model_instance = form_justificativa.save(commit=False)
-				model_instance.perfil = get_perfil_logado(request)
-				model_instance.save()
-
-				justificativa = Justificativa.objects.get(pk=model_instance.pk)
+				token = Token.objects.get(user_id=logado.id)
+				justificativa = post_justificativa(token,form_justificativa.data['descricao'])
+				justificativa = Justificativa.objects.get(pk=justificativa['id'])
 
 				return render(request, "desativar_conta.html",
 						  {'logado': logado, 'form': form, 'perfis': perfis,
@@ -178,25 +179,33 @@ def desativar_conta(request):
 @login_required(login_url='/login')
 def confirmar_justificativa(request, justificativa_id):
 
-	justificativa = Justificativa.objects.get(pk=justificativa_id)
-	justificativa.confirmar()
+	logado = get_perfil_logado(request)
+	token = Token.objects.get(user_id=logado.id)
+	confirmar_justificativa_api(token,justificativa_id)
 
 	return redirect('logout')
+
+@login_required(login_url='/login')
+def ativar(request, justificativa_id):
+
+	logado = get_perfil_logado(request)
+	token = Token.objects.get(user_id=logado.id)
+	deletar_justificativa(token,justificativa_id)
+	criar_alerta(request, "Conta desbloqueada ;)", TIPOS_ALERTA[0])
+
+	return redirect('index')
 
 @login_required(login_url='/login')
 def apagar_justificativa(request, justificativa_id):
 
 	justificativa = Justificativa.objects.get(pk=justificativa_id)
 	justificativa.invalidar()
-
 	criar_alerta(request, "Bloqueio de conta não confirmado ;)", TIPOS_ALERTA[1])
 
 	return redirect('index')
 
 def conta_desativada_logado(request):
-
 	logado = get_perfil_logado(request)
-
 	return logado.desativado()
 
 def conta_desativada(request, perfil_id):
@@ -207,6 +216,7 @@ def conta_desativada(request, perfil_id):
 	return desativado
 
 def ativar_conta(request):
+
 	logado = get_perfil_logado(request)
 	justificativa = logado.justificativas.get(situacao=True)
 	logado = get_perfil_logado(request)

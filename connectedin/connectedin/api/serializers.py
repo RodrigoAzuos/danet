@@ -17,16 +17,37 @@ class ReacaoSerializer(serializers.ModelSerializer):
     class Meta:
 
         model = Reacao
-        fields = ('id', 'tipo')
+        fields = ('id', 'tipo',)
+
+class TagSerializer(serializers.ModelSerializer):
+
+    class Meta:
+
+        model = Tag
+        fields = ('id', 'descricao',)
+
+class ComentarioSerializerSimples(serializers.ModelSerializer):
+
+    perfil = serializers.PrimaryKeyRelatedField(read_only=True)
+
+    class Meta:
+
+        model = Comentario
+        fields = ('id','descricao','perfil',)
 
 class PostSerializer(serializers.ModelSerializer):
 
     reacoes = ReacaoSerializer(many=True, read_only=True)
+    autor = PerfilSerializer(read_only=True, many=False)
+    criado_em = serializers.DateTimeField(format="%d-%m-%Y %H:%M")
+    tags = TagSerializer(many=True, read_only=True)
+    comentarios = ComentarioSerializerSimples(many=True, read_only=True)
 
     class Meta:
 
+
         model = Post
-        fields = ('id', 'resumo','reacoes','tags')
+        fields = ('id','foto','resumo','reacoes','tags','autor','criado_em' ,'like','dislike', 'comentarios',)
 
 class ComentarioSerializer(serializers.ModelSerializer):
 
@@ -62,15 +83,6 @@ class ReacaoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reacao
         fields = ('id', 'tipo', 'post', 'perfil', )
-
-class TagSerializer(serializers.ModelSerializer):
-
-    posts = PostSerializer(read_only=True, many=True)
-
-    class Meta:
-
-        model = Tag
-        fields = ('id', 'descricao', 'posts',)
 
 class JustificativaSerializer(serializers.ModelSerializer):
 

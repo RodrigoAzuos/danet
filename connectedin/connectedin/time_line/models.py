@@ -23,6 +23,13 @@ class Post(Base):
         self.tags.add(tag)
         self.save()
 
+    def like(self):
+
+        return len(self.reacoes.all().filter(tipo='like'))
+
+    def dislike(self):
+        return len(self.reacoes.all().filter(tipo='dislike'))
+
     def __str__(self):
         return self.resumo
 

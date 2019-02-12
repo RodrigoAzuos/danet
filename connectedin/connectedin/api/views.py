@@ -22,7 +22,6 @@ class DefaultMixin(object):
        permissions.IsAuthenticated,
     )
 
-
 class ComentarioViewSet(DefaultMixin, viewsets.ModelViewSet):
 
     serializer_class = ComentarioSerializer
@@ -60,7 +59,6 @@ class ComentarioViewSet(DefaultMixin, viewsets.ModelViewSet):
 
         return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
 
-
 class TagViewSet(DefaultMixin, viewsets.ModelViewSet):
 
     serializer_class = TagSerializer
@@ -75,7 +73,7 @@ class PostViewSet(DefaultMixin, viewsets.ModelViewSet):
 
         logado = get_perfil_logado(request)
 
-        queryset = Post.objects.all()
+        queryset = Post.objects.all().order_by('-criado_em')
 
         if not logado.usuario.is_superuser:
             queryset = Post.objects.filter(Q(autor__contatos=logado) or Q(autor=logado)).order_by('-criado_em')
@@ -132,7 +130,6 @@ class JustificativaViewSet(DefaultMixin, viewsets.ModelViewSet):
 
         serializer = JustificativaSerializer(justificativa)
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
-
 
 class ReacaoPost(DefaultMixin,viewsets.ViewSet):
 

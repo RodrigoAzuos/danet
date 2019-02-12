@@ -10,6 +10,7 @@ urlpatterns = [
     path('desativar-conta', views.desativar_conta, name='desativar_conta'),
     path('confirmar-desativacao/<int:justificativa_id>', views.confirmar_justificativa, name='confirmar_desativacao'),
     path('apagar-justificativa/<int:justificativa_id>', views.apagar_justificativa, name='apagar_desativacao'),
+    path('perfil/ativar/<int:justificativa_id>', views.ativar, name='ativar'),
     path('ativar-conta', views.ativar_conta, name='ativar_conta'),
 
     path('convidar/<int:perfil_id>', views.convidar, name='convidar'),

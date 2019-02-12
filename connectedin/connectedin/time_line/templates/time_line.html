@@ -3,6 +3,24 @@
 
     <div class="row">
         <div class="col-12 col-md-3 col-xl-3" >
+            <div class="card-body">
+                <h5 class="card-title text-center">Tags</h5>
+            </div>
+
+                <div class="card" style="width: 18rem;">
+                  <div class="card-body">
+                    <div class="text-right">
+                    {%for tag in tags%}
+                        <a href="{% url 'busca_tag' tag.id %}"> #{{tag.descricao}}</a>
+                    {%endfor%}
+                    </div>
+                      <form action="{%url 'busca_tag_form' %}" method="get" class="bd-search d-flex align-items-center">
+                            <input id="q" name="q" type="text" placeholder="Pesquisar tag..." class="form-control ds-input" autocomplete="off">
+                            <button type="submit" value="Buscar" auto class="btn btn-link bd-search-docs-toggle d-md-none p-0 ml-3" data-toggle="collapse">Buscar</button>
+	                    </form>
+                </div>
+
+        </div>
         </div>
         <div class="col-12 col-md-6 col-xl-6">
             <br/>
@@ -71,28 +89,79 @@
         {% endfor %}
     {%endif%}
 
-    {%for post in posts.object_list%}
-        <div class="card text-left">
-            <div class="card-header">
-                {{post.autor}}
-            </div>
-            {% if post.foto %}
-                <img class="card-img-top img-fluid" src="{{post.foto.url}}" alt="Imagem de capa do card">
-            {% endif %}
-            <div class="card-body">
-                <p class="card-text">{{post.resumo}}</p>
-                {% if post.autor == logado or logado.usuario.is_superuser%}
-                <div class="text-right">
-                    <a href="{% url 'deletar_post' post.id %}" class="btn btn-danger" onclick="return confirm('Deletar post?')">Deletar</a>
+    {% if posts.object_list%}
+        {%for post in posts.object_list%}
+            <div class="card text-left">
+                <div class="card-header">
+                    {{post.autor.nome}}
                 </div>
-                {%endif%}
+                {% if post.foto %}
+                    <img class="card-img-top img-fluid" src="{{post.foto}}" alt="Imagem de capa do card">
+                {% endif %}
+                <div class="card-body">
+                    <p class="card-text">{{post.resumo}}</p>
+                    {% if post.autor == logado or logado.usuario.is_superuser%}
+                    <div class="text-right">
+                        <a href="{% url 'deletar_post' post.id %}" class="btn btn-danger" onclick="return confirm('Deletar post?')">Deletar</a>
+                    </div>
+                    {%endif%}
+                </div>
+                <div class="card-footer text-muted ">
+
+                    <div class="text-right">
+                    {%for tag in post.tags%}
+                        <a href="{% url 'busca_tag' tag.id %}"> #{{tag.descricao}}</a>
+                    {%endfor%}
+                    </div>
+
+                    <div class="row col-12 col-md-12 col-xl-12  ">
+                        <div class="text-right">
+                            <a href="{% url 'reagir_web' post.id 1 %}"> like </a>{{post.like}}
+                            <a href="{% url 'reagir_web' post.id 2 %}">dislike</a> {{post.dislike}}
+                        </div>
+                    </div>
+
+                    <div class="text-right ">
+                            Criado em: {{post.criado_em}}
+                    </div>
+                </div>
+
+                     <hr/>
+                    <form action="{% url 'comentar' post.id %}" method="post">
+                        {% csrf_token %}
+                        <div class="input-group mb-3">
+                          <input type="text" class="form-control" placeholder="Digite um comentário" id="comentario" name="comentario" aria-label="Recipient's comentario" aria-describedby="button-addon2">
+                          <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Comentar</button>
+                          </div>
+                        </div>
+                    </form>
+
+                <p>
+                  <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                    Ver comentários
+                  </a>
+                </p>
+                <div class="collapse" id="collapseExample">
+                  <div class="card card-body">
+                    {% if post.comentarios%}
+                        <p class="card-text">Comentarios: </p> <hr/>
+                        {% for comentario in post.comentarios%}
+                            <div class="row col-12 col-md-12 col-xl-12  ">
+                                {{comentario.descricao}}  -
+                                {% if logado.id == comentario.perfil%}
+                                    <a href="{% url 'delete_comentario' post.id comentario.id %}"> Deletar</a>
+                                {%endif%}
+                            </div><br/>
+                        {%endfor%}
+                    {% endif %}
+                     <hr/>
+                  </div>
+                </div>
             </div>
-            <div class="card-footer text-muted">
-                {{post.criado_em}}
-            </div>
-        </div>
-    {%endfor%}
-    <hr/>
+        {%endfor%}
+
+        <hr/>
         <div class="d-flex justify-content-center">
             <nav aria-label="...">
               <ul class="pagination ">
@@ -124,6 +193,82 @@
               </ul>
             </nav>
         </div>
+
+    {%else%}
+
+    {%for post in posts%}
+
+            <div class="card text-left">
+                <div class="card-header">
+                    {{post.autor.nome}}
+                </div>
+                {% if post.foto %}
+                    <img class="card-img-top img-fluid" src="{{post.foto.url}}" alt="Imagem de capa do card">
+                {% endif %}
+                <div class="card-body">
+                    <p class="card-text">{{post.resumo}}</p>
+                    {% if post.autor == logado or logado.usuario.is_superuser%}
+                    <div class="text-right">
+                        <a href="{% url 'deletar_post' post.id %}" class="btn btn-danger" onclick="return confirm('Deletar post?')">Deletar</a>
+                    </div>
+                    {%endif%}
+                </div>
+                <div class="card-footer text-muted ">
+
+                    <div class="text-right">
+                    {%for tag in post.tags.all%}
+                        <a href="{% url 'busca_tag' tag.id %}"> #{{tag.descricao}}</a>
+                    {%endfor%}
+                    </div>
+
+                    <div class="row col-12 col-md-12 col-xl-12  ">
+                        <div class="text-right">
+                            <a href="{% url 'reagir_web' post.id 1 %}"> like </a>{{post.like}}
+                            <a href="{% url 'reagir_web' post.id 2 %}">dislike</a> {{post.dislike}}
+                        </div>
+                    </div>
+
+                    <div class="text-right ">
+                            Criado em: {{post.criado_em}}
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <form action="{% url 'comentar' post.id %}" method="post">
+                        {% csrf_token %}
+                        <div class="input-group mb-3">
+                          <input type="text" class="form-control" placeholder="Digite um comentário" id="comentario2" name="comentario" aria-label="Recipient's comentario" aria-describedby="button-addon1">
+                          <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="submit" id="button-addon1">Comentar</button>
+                          </div>
+                        </div>
+                    </form>
+                </div>
+
+                <p>
+                  <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample2" role="button" aria-expanded="false" aria-controls="collapseExample2">
+                    Ver comentários
+                  </a>
+                </p>
+                <div class="collapse" id="collapseExample2">
+                  <div class="card card-body">
+                    {% if post.comentarios.all%}
+                        <p class="card-text">Comentarios: </p> <hr/>
+                        {% for comentario in post.comentarios.all%}
+                            <div class="row col-12 col-md-12 col-xl-12  ">
+                                {{comentario.descricao}} -
+                                {% if logado.id == comentario.perfil.id%}
+                                    <a href="{% url 'delete_comentario' post.id comentario.id %}"> Deletar</a>
+                                {%endif%}
+                            </div><br/>
+                        {%endfor%}
+                    {% endif %}
+                     <hr/>
+                  </div>
+                </div>
+            </div>
+        {%endfor%}
+     {%endif%}
 
 
 {% endblock%}

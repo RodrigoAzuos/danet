@@ -7,6 +7,9 @@ from perfis.views import get_perfil_logado,conta_desativada_logado, get_alerta, 
 from time_line.forms import PostModelForm
 from time_line.models import Post, Tag
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
+from rest_framework.authtoken.models import Token
+
+from api_consumer.views import get_posts, reagir as reagir_api, comentar as comentar_api, delete_comentario
 
 
 class TimeLinePost(View):
@@ -19,6 +22,10 @@ class TimeLinePost(View):
         filtro = None
         resultados = None
         alerta = get_alerta(request)
+        tags = Tag.objects.all().order_by('-id')[:3:1]
+
+        token = Token.objects.get(user_id=logado.id)
+
 
         if logado.desativado():
             return redirect('ativar_conta')
@@ -30,11 +37,12 @@ class TimeLinePost(View):
 
             resultados = filtrar(request, perfis, logado, filtro)
 
-        posts_list = Post.objects.all().filter(autor__contatos=logado).order_by('-criado_em') | \
-                     Post.objects.all().filter(autor=logado).order_by('-criado_em')
+        posts_list = get_posts(token)
 
         if logado.usuario.is_superuser:
-            posts_list = Post.objects.all().order_by('-criado_em')
+            # posts_list = Post.objects.all().order_by('-criado_em')
+            posts_list = get_posts(token)
+
 
         paginator = Paginator(posts_list, 8)
 
@@ -47,7 +55,7 @@ class TimeLinePost(View):
         except (EmptyPage, InvalidPage):
             posts = paginator.page(paginator.num_pages)
 
-        return render(request, 'time_line.html', {'form':form, 'posts':posts,
+        return render(request, 'time_line.html', {'form':form, 'posts':posts,'tags':tags,
                                                   'logado': logado, 'resultados': resultados,
                                                   'alerta':alerta, 'tipos':TIPOS_ALERTA})
 
@@ -59,6 +67,7 @@ class TimeLinePost(View):
         filtro = None
         resultados = None
         alerta = get_alerta(request)
+        tags = Tag.objects.all().order_by('-id')[:3:1]
 
         if logado.desativado():
             return redirect('ativar_conta')
@@ -110,7 +119,7 @@ class TimeLinePost(View):
 
         print(form.errors)
 
-        return render(request, 'time_line.html', {'form': form, 'posts': posts,
+        return render(request, 'time_line.html', {'form': form, 'posts': posts,'tags':tags,
                                                   'logado': logado, 'resultados': resultados,
                                                   'alerta': alerta, 'tipos': TIPOS_ALERTA})
 
@@ -156,6 +165,80 @@ def criar_tags(tags,post):
 
 
     return tag_list
+
+class BuscarPostTag(View):
+
+    def get(self, request, tag_id):
+
+        form = PostModelForm()
+        logado = get_perfil_logado(request)
+        perfis = Perfil.objects.all()
+        filtro = None
+        resultados = None
+        alerta = get_alerta(request)
+
+        post_list = Post.objects.all().filter(tags=tag_id)
+        tags = Tag.objects.all().order_by('-id')[:3:1]
+
+
+        return render(request, 'time_line.html', {'form': form, 'posts': post_list,
+                                                  'logado': logado, 'resultados': resultados,
+                                                  'alerta': alerta, 'tipos': TIPOS_ALERTA, 'tags':tags})
+
+class PesquisaPostTag(View):
+
+    def get(self, request):
+
+        form = PostModelForm()
+        logado = get_perfil_logado(request)
+        filtro = None
+        resultados = None
+        alerta = get_alerta(request)
+        tags = Tag.objects.all().order_by('-id')[:3:1]
+
+        if 'q' in request.GET:
+            filtro = request.GET['q']
+
+        if filtro:
+
+            tag = Tag.objects.all().filter(descricao__icontains=filtro)
+            resultados = Post.objects.all().filter(tags=tag[0].id)
+
+
+        return render(request, 'time_line.html', {'form': form, 'posts': resultados,
+                                                  'logado': logado, 'alerta': alerta, 'tipos': TIPOS_ALERTA, 'tags': tags})
+
+def reagir(request, pk,reacao):
+
+    logado = get_perfil_logado(request)
+    token = Token.objects.get(user_id=logado.id)
+    reagir_api(token, pk,reacao)
+
+    return redirect('time_line')
+
+def comentar(request, post_id):
+
+    logado = get_perfil_logado(request)
+    token = Token.objects.get(user_id=logado.id)
+    comentar_api(token, post_id,request.POST['comentario'])
+
+    print(request.stream)
+
+    return redirect('time_line')
+
+def deletar_comentario(request,post_id,pk):
+
+    logado = get_perfil_logado(request)
+    token = Token.objects.get(user_id=logado.id)
+    delete_comentario(token,post_id,pk)
+
+    return redirect('time_line')
+
+
+
+
+
+
 
 
 
