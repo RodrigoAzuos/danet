@@ -39,15 +39,29 @@ class PostSerializer(serializers.ModelSerializer):
 
     reacoes = ReacaoSerializer(many=True, read_only=True)
     autor = PerfilSerializer(read_only=True, many=False)
-    criado_em = serializers.DateTimeField(format="%d-%m-%Y %H:%M")
+    criado_em = serializers.DateTimeField(format="%d-%m-%Y %H:%M", read_only=True)
     tags = TagSerializer(many=True, read_only=True)
     comentarios = ComentarioSerializerSimples(many=True, read_only=True)
 
     class Meta:
-
-
         model = Post
         fields = ('id','foto','resumo','reacoes','tags','autor','criado_em' ,'like','dislike', 'comentarios',)
+
+
+    def create(self, validated_data):
+
+        autor_id = self.context.get('autor_id')
+        criado_em = self.context.get('criado_em')
+
+        try:
+            perfil = Perfil.objects.get(pk=autor_id)
+            post = Post.objects.create(resumo=validated_data['resumo'], autor_id = autor_id, criado_em = criado_em)
+            return post
+
+        except perfil.DoesNotExist:
+            raise exceptions.NotFound(detail='Perfil não localizado.')
+        except:
+            raise exceptions.NotAcceptable(detail='Não foi possível adicionar o Post.')
 
 class ComentarioSerializer(serializers.ModelSerializer):
 

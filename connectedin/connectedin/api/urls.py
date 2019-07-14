@@ -3,6 +3,7 @@ from rest_framework.routers import DefaultRouter
 
 from api.views import ComentarioViewSet, TagViewSet, ReacaoPost, PostViewSet, JustificativaViewSet
 from  rest_framework.authtoken.views import obtain_auth_token
+from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
 
 router = DefaultRouter()
 

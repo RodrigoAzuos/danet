@@ -6,7 +6,7 @@ from api.serializers import ComentarioSerializer, TagSerializer, PostSerializer,
 from rest_framework.response import Response
 from time_line.models import Comentario, Tag, Post, Reacao
 from perfis.models import Perfil, Justificativa
-
+from datetime import datetime
 from perfis.views import get_perfil_logado
 from django.db.models import Q
 
@@ -69,14 +69,26 @@ class PostViewSet(DefaultMixin, viewsets.ModelViewSet):
     serializer_class = PostSerializer
     queryset = Post.objects.all()
 
+    def create(self, request, *args, **kwargs):
+
+        perfil = request.user.perfil
+        print(perfil.id)
+
+        serializer = PostSerializer(data=request.data,
+                                          context= {'autor_id': perfil.id, 'criado_em': datetime.now()})
+
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
     def list(self, request, *args, **kwargs):
 
         logado = get_perfil_logado(request)
-
         queryset = Post.objects.all().order_by('-criado_em')
 
         if not logado.usuario.is_superuser:
-            queryset = Post.objects.filter(Q(autor__contatos=logado) or Q(autor=logado)).order_by('-criado_em')
+            queryset = Post.objects.filter(Q(autor=logado) or Q(autor__contatos=logado)).order_by('-criado_em')
 
         page = self.paginate_queryset(queryset)
 
